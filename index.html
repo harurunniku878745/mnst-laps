@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f6fb">
+    <title>運極計画 | モンスト周回時間計算</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="運極計画 ホーム">
+          <span class="brand-icon" aria-hidden="true">U</span>
+          <span>運極計画</span>
+        </a>
+        <span class="topbar-note">周回の目安をかんたん計算</span>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">MONSTER STRIKE · FARMING PLANNER</p>
+        <h1 id="page-title">運極まで、あと何周？</h1>
+        <p class="intro-copy">目標と周回ペースを入力すると、必要な周回数と時間の目安がわかります。</p>
+      </section>
+
+      <section class="planner" aria-label="運極周回の計算">
+        <form class="settings" id="planner-form">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR PLAN</p>
+              <h2>周回プラン</h2>
+            </div>
+            <span class="edit-badge"><span aria-hidden="true">✎</span> 数値を入力</span>
+          </div>
+
+          <label class="field">
+            <span class="field-label">運極を作る数</span>
+            <span class="field-help">完成させたいキャラの数</span>
+            <span class="input-wrap">
+              <input id="target-count" name="targetCount" type="number" min="1" max="9999" step="1" value="1" inputmode="numeric" required>
+              <span class="unit">体</span>
+            </span>
+          </label>
+
+          <label class="field">
+            <span class="field-label">1体に必要なラック</span>
+            <span class="field-help">通常の運極なら99</span>
+            <span class="input-wrap">
+              <input id="luck-required" name="luckRequired" type="number" min="1" max="9999" step="1" value="99" inputmode="numeric" required>
+              <span class="unit">体</span>
+            </span>
+          </label>
+
+          <label class="field">
+            <span class="field-label">今持っている数</span>
+            <span class="field-help">対象キャラのラック合計</span>
+            <span class="input-wrap">
+              <input id="owned-count" name="ownedCount" type="number" min="0" max="999999" step="1" value="0" inputmode="numeric" required>
+              <span class="unit">体</span>
+            </span>
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">1周の平均ドロップ</span>
+              <span class="field-help">宝箱など込みの平均</span>
+              <span class="input-wrap">
+                <input id="drops-per-run" name="dropsPerRun" type="number" min="0.1" max="9999" step="0.1" value="3" inputmode="decimal" required>
+                <span class="unit">体</span>
+              </span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">クエスト1周の時間</span>
+              <span class="field-help">出発からクリアまで</span>
+              <span class="input-wrap">
+                <input id="minutes-per-run" name="minutesPerRun" type="number" min="0.1" max="9999" step="0.1" value="5" inputmode="decimal" required>
+                <span class="unit">分</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="reset-row">
+            <button class="reset-button" id="reset-values" type="button">数値をリセット</button>
+          </div>
+          <p class="form-note"><span aria-hidden="true">ⓘ</span> ドロップ数は平均値で計算します。実際の周回数・時間は目安です。</p>
+          <p class="storage-note" id="storage-note" role="status" aria-live="polite">入力内容はこのブラウザーに自動保存されます。</p>
+        </form>
+
+        <section class="results" aria-labelledby="result-title" aria-live="polite">
+          <div class="result-top">
+            <p class="eyebrow">ESTIMATED RESULT</p>
+            <span class="estimate-pill"><span class="status-dot" aria-hidden="true"></span> 周回の目安</span>
+          </div>
+          <h2 id="result-title">運極完成まで</h2>
+
+          <div class="time-card">
+            <span class="time-label">かかる時間</span>
+            <p class="time-value" id="time-result">約 2時間45分</p>
+            <p class="time-sub" id="time-sub">1周5分 × 33周</p>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-label">必要な周回数</span>
+              <strong><span id="runs-result">33</span><small>周</small></strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">あと必要なドロップ</span>
+              <strong><span id="remaining-result">99</span><small>体</small></strong>
+            </div>
+          </div>
+
+          <div class="scenario-block" aria-label="ドロップ数による周回時間の比較">
+            <div class="scenario-heading">
+              <span>ドロップの上振れ・下振れ</span>
+              <span>平均ドロップを基準に計算</span>
+            </div>
+            <div class="scenario-grid">
+              <div class="scenario-card scenario-high">
+                <span class="scenario-label">上振れ <small>1.2倍</small></span>
+                <strong><span id="high-runs">28</span><small>周</small></strong>
+                <span class="scenario-time" id="high-time">約 2時間20分</span>
+                <span class="scenario-drops"><span id="high-drops">3.6</span>体 / 周</span>
+              </div>
+              <div class="scenario-card scenario-average">
+                <span class="scenario-label">平均 <small>1.0倍</small></span>
+                <strong><span id="average-runs">33</span><small>周</small></strong>
+                <span class="scenario-time" id="average-time">約 2時間45分</span>
+                <span class="scenario-drops"><span id="average-drops">3</span>体 / 周</span>
+              </div>
+              <div class="scenario-card scenario-low">
+                <span class="scenario-label">下振れ <small>0.8倍</small></span>
+                <strong><span id="low-runs">42</span><small>周</small></strong>
+                <span class="scenario-time" id="low-time">約 3時間30分</span>
+                <span class="scenario-drops"><span id="low-drops">2.4</span>体 / 周</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-block">
+            <div class="progress-heading">
+              <span>運極までの進捗</span>
+              <strong id="progress-percent">0%</strong>
+            </div>
+            <div class="progress-track" role="progressbar" aria-label="運極までの進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
+              <span id="progress-fill"></span>
+            </div>
+            <p class="progress-caption" id="progress-caption">0 / 99体</p>
+          </div>
+
+          <p class="complete-message" id="complete-message" hidden>目標達成！周回は必要ありません 🎉</p>
+          <div class="result-foot">
+            <span class="sparkle" aria-hidden="true">✦</span>
+            <span>自分のペースで、コツコツいこう。</span>
+          </div>
+        </section>
+      </section>
+
+      <footer>このツールの計算結果は目安です。実際のドロップ数やプレイ時間により変動します。</footer>
+    </main>
+  </body>
+</html>
